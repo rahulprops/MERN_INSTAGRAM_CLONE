@@ -3,6 +3,7 @@ import 'dotenv/config.js'
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
+import dbConnection from './utils/DB.js'
 const app=express()
 const port=process.env.PORT || 3000
 
@@ -17,4 +18,5 @@ app.use(cors({
 //! server start
 app.listen(port,()=>{
     console.log(`server is running on port http://localhost:${port}`)
+    dbConnection()
 })
