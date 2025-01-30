@@ -38,3 +38,37 @@ export const sendMessage=async (req,res)=>{
        return errorHandler(res,500,`server error ${err.message}`) 
     }
 }
+
+//! get message
+export const getMessage = async (req, res) => {
+    try {
+        const senderId = req.id; // Use req.user.id instead of req.id
+        const receiverId = req.params.id;
+
+        // Find the conversation between the two users
+        const conversation = await conversationModel.findOne({
+            participants: { $all: [senderId, receiverId] }
+        }).populate({
+            path: "message",
+            populate: {
+                path: "senderId receiverId",
+                select: "username profilePicture"
+            }
+        });
+
+        if (!conversation) {
+            return res.status(200).json({
+                success: true,
+                messages: []
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            messages: conversation.message
+        });
+
+    } catch (err) {
+        return errorHandler(res, 500, `Server error: ${err.message}`);
+    }
+};
