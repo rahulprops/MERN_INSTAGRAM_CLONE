@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import dbConnection from './utils/DB.js'
 import userRouter from './routes/user.route.js'
+import postRouter from './routes/post.route.js'
 
 const app=express()
 const port=process.env.PORT || 3000
@@ -21,6 +22,7 @@ app.use(cors({
 
 //! apis
 app.use("/api/user",userRouter)
+app.use("/api/post",postRouter)
 //! server start
 app.listen(port,()=>{
     console.log(`server is running on port http://localhost:${port}`)
