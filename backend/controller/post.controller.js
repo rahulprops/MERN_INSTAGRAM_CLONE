@@ -3,6 +3,7 @@ import errorHandler from '../middleware/error_logs/errorHandler.js'
 import cloudinary from '../utils/cloudinary.js';
 import postModel from '../models/post.model.js';
 import userModel from '../models/user.model.js';
+import commentModel from '../models/comment.model.js';
  //! create post
 export const addNewPost=async (req,res)=>{
     const {caption}=req.body;
@@ -122,3 +123,44 @@ export const addNewPost=async (req,res)=>{
         return errorHandler(res,500,`server error ${err.message}`)
     }
  }
+
+ //! add comments
+ export const addComments = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const userId = req.id; // Use req.user.id instead of req.id
+        const { text } = req.body;
+
+        if (!text) {
+            return errorHandler(res, 400, "Text is required");
+        }
+
+        // Find post
+        const post = await postModel.findById(postId);
+        if (!post) {
+            return errorHandler(res, 404, "Post not found");
+        }
+
+        // Create comment
+        let comment = new commentModel({
+            text,
+            author: userId,
+            post: postId,
+        });
+
+        // Save comment and post
+        post.comments.push(comment._id);
+        await Promise.all([post.save(), comment.save()]);
+
+        // Populate author details AFTER saving
+        comment = await comment.populate("author", "username profilePicture");
+
+        return res.status(200).json({
+            success: true,
+            message: "Comment added",
+            comment,
+        });
+    } catch (err) {
+        return errorHandler(res, 500, `Server error: ${err.message}`);
+    }
+};
