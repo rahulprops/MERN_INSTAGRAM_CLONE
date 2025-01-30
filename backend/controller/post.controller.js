@@ -178,3 +178,31 @@ export const getCommentsOfPost=async (req,res)=>{
         return errorHandler(res,500,`server error ${err.message}`)
     }
 }
+//! delete post
+export const deletePost=async (req,res)=>{
+    try {
+        const postId=req.params.id;
+        const userId=req.id;
+        const post = await postModel.findById(postId)
+        if(!post){
+            return errorHandler(res,404,"post not found")
+        }
+        // check if the logged in user is the owner of the post
+        if(post.author.toString()!==userId){
+            return errorHandler(res,403,"Unauthorized");
+        }
+        await postModel.findByIdAndDelete(postId)
+
+        // remove the post id from the user's post
+        let user=await userModel.findById(userId)
+        user.posts= user.posts.filter(id=>id.toString()!==postId)
+        await user.save()
+
+        // delete associated comments
+        await commentModel.deleteMany({post:postId})
+
+        return errorHandler(res,200,"post deleted")
+    } catch (err) {
+        return errorHandler(res,500,`server error ${err.message}`)
+    }
+}
