@@ -2,6 +2,7 @@ import validator from 'validator'
 import userModel from '../models/user.model.js';
 import bcrypt from 'bcrypt'
 import generateToken from '../config/generatetoken.js';
+import errorHandler from '../middleware/error_logs/errorHandler.js';
 //! register user 
 export const register= async (req,res)=>{
     const {username,email,password,gender}=req.body;
@@ -52,5 +53,42 @@ export const register= async (req,res)=>{
      return res.status(500).json({
         message:`server error ${err.message}`
      })
+    }
+}
+
+//! login user
+export const login=async (req,res)=>{
+    const {email,password}=req.body;
+    if(!email || !password){
+        return errorHandler(res,400,"all feilds requied")
+    }
+    if(!validator.isEmail(email)){
+        return errorHandler(res,400,"please enter valid email")
+    }
+    try{
+        const user=await userModel.findOne({email})
+        if(!user){
+            return errorHandler(res,400,"email not valid")
+        }
+
+        // compare password
+        const verifyPass=await bcrypt.compare(password,user.password)
+        if(!verifyPass){
+            return errorHandler(res,400,"please enter valid passwor")
+        }
+        generateToken(user._id,res)
+        return errorHandler(res,200,"user login sucessful",user)
+    }catch(err){
+      return errorHandler(res,500,`server error ${err.message}`)
+    }
+}
+
+//! logout
+export const logout= async (req,res)=>{
+    try {
+         res.cookie("token","",{maxAge:0})
+         return errorHandler(res,200,"logout sucess")
+    } catch (err) {
+        return errorHandler(res,500,`server error ${err.message}`)
     }
 }
