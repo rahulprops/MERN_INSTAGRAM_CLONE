@@ -103,7 +103,7 @@ export const getProfile=async (req,res)=>{
         return errorHandler(res,400,"please enter valid id")
     }
     try {
-        const user=await userModel.findById(userId)
+        const user=await userModel.findById(userId).select("-password")
         return errorHandler(res,200,"get profile sucess",user)
     } catch (err) {
       return errorHandler(res,500,`server error ${err.message}`)        
@@ -162,5 +162,42 @@ export const getSuggestedUsers=async (req,res)=>{
     } catch (err) {
         return errorHandler(res,500,`server error ${err.message}`)
         
+    }
+}
+
+//! follow and unfollow
+export const followOrUnfollow=async (req,res)=>{
+    const followId=req.id;
+    const followingId=req.params.id;
+    if(followId === followingId){
+        return errorHandler(res,400,"you cant not follow/unfollow itself")
+    }
+
+    try {
+        const user= await userModel.findById(followId)
+        const targetUser=await userModel.findById(followingId)
+        if(!user || !targetUser){
+            return errorHandler(res,404,"user not found")
+        }
+
+        const isFollowing= user.following.includes(followingId)
+        
+        if(isFollowing){
+           // unfollow
+           await Promise.all([
+            userModel.updateOne({_id:followId},{$pull:{following:followingId}}),
+            userModel.updateOne({_id:followingId},{$pull:{followers:followId}})
+        ])
+        return errorHandler(res,200,"unfollow sucessfully")
+        }else{
+           // follow login 
+            await Promise.all([
+                userModel.updateOne({_id:followId},{$push:{following:followingId}}),
+                userModel.updateOne({_id:followingId},{$push:{followers:followId}})
+            ])
+           return errorHandler(res,200,"follow sucessful") 
+        }
+    } catch (err) {
+        return errorHandler(res,500,`server error ${err.message}`)
     }
 }
