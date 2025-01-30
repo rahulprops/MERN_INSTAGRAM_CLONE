@@ -6,6 +6,7 @@ import cors from 'cors'
 import dbConnection from './utils/DB.js'
 import userRouter from './routes/user.route.js'
 import postRouter from './routes/post.route.js'
+import messageRouter from './routes/message.route.js'
 
 const app=express()
 const port=process.env.PORT || 3000
@@ -23,6 +24,7 @@ app.use(cors({
 //! apis
 app.use("/api/user",userRouter)
 app.use("/api/post",postRouter)
+app.use("/api/message",messageRouter)
 //! server start
 app.listen(port,()=>{
     console.log(`server is running on port http://localhost:${port}`)
