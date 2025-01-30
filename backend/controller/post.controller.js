@@ -206,3 +206,27 @@ export const deletePost=async (req,res)=>{
         return errorHandler(res,500,`server error ${err.message}`)
     }
 }
+//! bookmark 
+export const bookmarkPost=async (req,res)=>{
+    try {
+        const postId=req.params.id;
+        const userId=req.id;
+        const post=await postModel.findById(postId)
+        if(!post){
+            return errorHandler(res,404,"post not found")
+        }
+        const user=await userModel.findById(userId)
+        if(user.bookmarks.includes(post._id)){
+            // already bookmarks
+            await user.updateOne({$pull:{bookmarks:post._id}})
+            await user.save()
+            return errorHandler(res,200,"post remove form bookmarks")
+        }else{
+            await user.updateOne({$addToSet:{bookmarks:post._id}})
+            await  user.save();
+            return errorHandler(res,200,"post bookmarked")
+        }
+    } catch (err) {
+        return errorHandler(res,500,`server error ${err.message}`)
+    }
+}

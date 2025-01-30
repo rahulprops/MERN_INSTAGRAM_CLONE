@@ -1,5 +1,5 @@
 import express from 'express'
-import { addComments, addNewPost, deletePost, getAllPost, getCommentsOfPost, likepost, unlikePost } from '../controller/post.controller.js'
+import { addComments, addNewPost, bookmarkPost, deletePost, getAllPost, getCommentsOfPost, likepost, unlikePost } from '../controller/post.controller.js'
 import isAuthenticated from '../middleware/auth/isAuthenticated.js'
 import upload from '../middleware/multer/multer.js'
 const postRouter=express.Router()
@@ -12,4 +12,5 @@ postRouter.post("/dislike/:id", isAuthenticated, unlikePost)
 postRouter.post("/add-comment/:id", isAuthenticated, addComments)
 postRouter.get("/get-comment-post/:id", getCommentsOfPost)
 postRouter.delete("/delete/:id",isAuthenticated,deletePost)
+postRouter.post("/bookmark/:id",isAuthenticated,bookmarkPost)
 export default postRouter;
