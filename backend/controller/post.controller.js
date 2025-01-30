@@ -164,3 +164,17 @@ export const addNewPost=async (req,res)=>{
         return errorHandler(res, 500, `Server error: ${err.message}`);
     }
 };
+
+//! getcommentsofpost
+export const getCommentsOfPost=async (req,res)=>{
+    try {
+        const postId=req.params.id;
+        const comments=await commentModel.find({post:postId}).populate('author','username, profilePicture')
+        if(!comments){
+            return errorHandler(res,404,"no comments for this post")
+        }
+        return errorHandler(res,200,"comments sucess",comments)
+    } catch (err) {
+        return errorHandler(res,500,`server error ${err.message}`)
+    }
+}
