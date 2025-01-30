@@ -3,6 +3,9 @@ import userModel from '../models/user.model.js';
 import bcrypt from 'bcrypt'
 import generateToken from '../config/generatetoken.js';
 import errorHandler from '../middleware/error_logs/errorHandler.js';
+import mongoose from 'mongoose';
+import getDataUri from '../utils/datauri.js';
+import cloudinary from '../utils/cloudinary.js';
 //! register user 
 export const register= async (req,res)=>{
     const {username,email,password,gender}=req.body;
@@ -86,9 +89,63 @@ export const login=async (req,res)=>{
 //! logout
 export const logout= async (req,res)=>{
     try {
-         res.cookie("token","",{maxAge:0})
+         res.cookie("refreshToken","",{maxAge:0})
          return errorHandler(res,200,"logout sucess")
     } catch (err) {
         return errorHandler(res,500,`server error ${err.message}`)
     }
 }
+
+//! getProfile
+export const getProfile=async (req,res)=>{
+    const userId=req.params.id
+    if(!mongoose.Types.ObjectId.isValid(userId)){
+        return errorHandler(res,400,"please enter valid id")
+    }
+    try {
+        const user=await userModel.findById(userId)
+        return errorHandler(res,200,"get profile sucess",user)
+    } catch (err) {
+      return errorHandler(res,500,`server error ${err.message}`)        
+    }
+}
+//!edit proife 
+export const editProfile = async (req, res) => {
+    const userId = req.id; // Use `req.user.id` from authentication middleware
+    const { bio } = req.body;
+    const profilePicture = req.file;
+    let cloudResponse;
+
+    try {
+        // Fetch user from DB
+        const user = await userModel.findById(userId);
+        if (!user) {
+            return errorHandler(res, 404, "User not found");
+        }
+
+        // Upload new profile picture (if provided)
+        if (profilePicture) {
+            const fileUri = getDataUri(profilePicture);
+            if (!fileUri) {
+                return errorHandler(res, 400, "Invalid file format");
+            }
+            cloudResponse = await cloudinary.uploader.upload(fileUri);
+            user.profilePicture = cloudResponse.secure_url;
+        }
+
+        // Update bio if provided
+        if (bio) user.bio = bio;
+
+        // Save updated user data
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Profile updated successfully",
+            user
+        });
+
+    } catch (err) {
+        return errorHandler(res, 500, `Server error: ${err.message}`);
+    }
+};
