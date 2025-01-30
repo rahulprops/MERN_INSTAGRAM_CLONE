@@ -149,3 +149,18 @@ export const editProfile = async (req, res) => {
         return errorHandler(res, 500, `Server error: ${err.message}`);
     }
 };
+
+//! get suggestedusers
+export const getSuggestedUsers=async (req,res)=>{
+    try {
+         const suggestedUsers=await userModel.find({_id:{$ne:req.id}}).select("-password")
+         if(!suggestedUsers){
+            return errorHandler(res,400,"currently do not have any users")
+         }
+
+         return errorHandler(res,200,"done",suggestedUsers)
+    } catch (err) {
+        return errorHandler(res,500,`server error ${err.message}`)
+        
+    }
+}
