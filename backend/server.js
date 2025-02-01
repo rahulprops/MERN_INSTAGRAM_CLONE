@@ -16,7 +16,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(cookieParser())
 app.use(cors({
-    origin:"",
+    origin:process.env.ORGIN,
     methods:["GET","POST","PUT","DELETE"],
     credentials:true
 }))
