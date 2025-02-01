@@ -5,6 +5,7 @@ import MainLayout from "./Layout/MainLayout";
 import Login from "./componets/ui/Login";
 import Signup from "./componets/ui/Signup";
 import Home from "./pages/Home";
+import CreatePost from "./pages/CreatePost";
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           element={isAuthenticated ? <MainLayout /> : <Navigate to="/" />}
         >
           <Route index element={<Home/>} />
+          <Route path="/dashboard/create-post" element={<CreatePost/>} />
         </Route>
       </Routes>
     </Router>

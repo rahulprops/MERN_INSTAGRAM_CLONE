@@ -20,6 +20,8 @@ const [logout,{isSuccess:isLogoutSucesss}]=useLogoutMutation()
           if(textType==='Logout'){
            await logout()
 
+          }else if(textType==='Create'){
+            navigate("/dashboard/create-post")
           }
     }
 
