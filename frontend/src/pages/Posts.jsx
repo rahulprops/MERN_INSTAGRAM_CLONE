@@ -4,14 +4,14 @@ import { FaHeart } from "react-icons/fa";
 import image from '../assets/kurta.jpg';
 import CommentDialog from "../componets/CommentDialog";
 
-const Posts = () => {
+const Posts = ({post}) => {
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(120);
   const [saved, setSaved] = useState(false);
   const [text, setText] = useState(""); // State for comment text
   const [open, setOpen] = useState(false); // State to manage comment dialog visibility
   const [comments, setComments] = useState(["Beautiful!", "Amazing view!", "Love it!"]); // Example comments
-
+ console.log(post)
   const toggleLike = () => {
     setLiked(!liked);
     setLikes(liked ? likes - 1 : likes + 1);
@@ -41,15 +41,15 @@ const Posts = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <img src={image} alt="User" className="w-10 h-10 rounded-full" />
-          <span className="font-semibold">username</span>
+          <img src={post?.author?.profilePicture} alt="User" className="w-10 h-10 rounded-full" />
+          <span className="font-semibold capitalize">{post.author.username}</span>
         </div>
         <FiMoreHorizontal className="text-xl cursor-pointer" />
       </div>
 
       {/* Post Image */}
       <div className="mt-3">
-        <img src={image} alt="Post" className="rounded-lg w-full" />
+        <img src={post?.image} alt="Post" className="rounded-lg w-full" />
       </div>
 
       {/* Actions */}
@@ -76,7 +76,7 @@ const Posts = () => {
 
       {/* Caption */}
       <p className="text-sm mt-1">
-        <span className="font-semibold">username</span> Loving this beautiful view! 🌄✨
+        <span className="font-semibold capitalize">{post.author.username}</span> {post.caption} 🌄✨
       </p>
 
       {/* Comments */}

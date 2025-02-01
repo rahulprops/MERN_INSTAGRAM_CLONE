@@ -8,7 +8,17 @@ const postApi=apiSlice.injectEndpoints({
                 method:"POST",
                 body:formData
             })
+        }),
+        listPost:builder.query({
+              query:()=>({
+                url:"/post/all-posts",
+                method:"GET",
+                
+              }),
+              transformResponse:(data)=>{
+                return data.data
+              }
         })
     })
 })
-export const {useCreatePostMutation}=postApi;
+export const {useCreatePostMutation,useListPostQuery}=postApi;

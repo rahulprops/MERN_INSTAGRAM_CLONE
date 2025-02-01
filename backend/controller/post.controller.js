@@ -51,13 +51,13 @@ export const addNewPost=async (req,res)=>{
 //! getall post
  export const getAllPost=async (req,res)=>{
     try {
-        const posts=await postModel.find().sort({createAt:-1}).populate({path:'author',select:'username,profilePicture'})
+        const posts=await postModel.find().sort({createdAt:-1}).populate({path:'author',select:'username profilePicture'})
         .populate({
             path:"comments",
             sort:{createdAt:-1},
             populate:{
                 path:"author",
-                select:'username , profilePicture'
+                select:'username  profilePicture'
             }
         })
         return errorHandler(res,200,"get post",posts)
