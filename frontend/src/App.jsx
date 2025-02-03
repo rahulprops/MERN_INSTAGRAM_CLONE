@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import MainLayout from "./Layout/MainLayout";
 import Login from "./componets/ui/Login";
@@ -9,10 +9,40 @@ import CreatePost from "./pages/CreatePost";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import ChatPage from "./pages/ChatPage";
-
+import { useDispatch, useSelector } from "react-redux";
+import io from 'socket.io-client'
+import { setSocket } from "./redux/slice/socketSlice";
+import { setOnlineUsers } from "./redux/slice/chatSlice";
 
 function App() {
+  const {user}=useSelector((store=>store.auth))
   const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const dispatch=useDispatch()
+    
+  useEffect(()=>{
+     if(user){
+       const socketio=io('http://localhost:9076',{
+        query:{
+          userId:user?._id
+        },
+        transports:['websocket']
+       })
+       dispatch(setSocket(socketio));
+
+       // listen all the events
+       socketio.on('getOnlineUsers',(onlineUsers)=>{
+        dispatch(setOnlineUsers(onlineUsers))
+       })
+
+       return ()=>{
+        socketio.close()
+        dispatch(setOnlineUsers(null))
+       }
+     }else{
+      socketio.close()
+      dispatch(setSocket(null))
+     }
+  },[user,dispatch])
 
   return (
     <Router>
