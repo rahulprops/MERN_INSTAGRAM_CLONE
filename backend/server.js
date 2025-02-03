@@ -7,8 +7,9 @@ import dbConnection from './utils/DB.js'
 import userRouter from './routes/user.route.js'
 import postRouter from './routes/post.route.js'
 import messageRouter from './routes/message.route.js'
+import { server,app } from './socket/socket.js'
 
-const app=express()
+// const app=express()
 const port=process.env.PORT || 3000
 
 //! middleware 
@@ -26,7 +27,7 @@ app.use("/api/user",userRouter)
 app.use("/api/post",postRouter)
 app.use("/api/message",messageRouter)
 //! server start
-app.listen(port,()=>{
+server.listen(port,()=>{
     console.log(`server is running on port http://localhost:${port}`)
     dbConnection()
 })
