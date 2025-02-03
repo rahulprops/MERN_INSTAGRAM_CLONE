@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useLazyGetProfileQuery } from "../redux/apis/userApi";
 import { useSelector } from "react-redux";
 
@@ -8,7 +8,7 @@ const Profile = () => {
   const { id } = useParams();
   const {user}=useSelector((store=>store.auth))
   const [getProfile, { data: profile, isLoading }] = useLazyGetProfileQuery();
-
+ const navigate=useNavigate()
   useEffect(() => {
     getProfile(id);
   }, [id]);
@@ -35,7 +35,7 @@ const Profile = () => {
           <div className="flex items-center space-x-4">
             <h2 className="text-xl font-semibold capitalize">{profile?.username}</h2>
             {isLoggedInUserProfile ? (
-              <button className="px-4 py-1 bg-gray-200 rounded-md text-sm font-medium hover:bg-gray-300">
+              <button onClick={()=>navigate("/dashboard/edit-profile")} className="px-4 py-1 bg-gray-200 rounded-md text-sm font-medium hover:bg-gray-300">
                 Edit Profile
               </button>
             ) : isFollowing ? (

@@ -42,8 +42,16 @@ const userApi = apiSlice.injectEndpoints({
             transformResponse:(data)=>{
                 return data.data
               },
+        }),
+        editProfile:builder.mutation({
+            query:(formData)=>({
+                url:"/user/edit-profile",
+                method:"put",
+                body:formData
+            }),
+            
         })
     })
 });
 
-export const { useLoginMutation,useLogoutMutation , useSuggestedUsersQuery,useLazyGetProfileQuery} = userApi;
+export const { useLoginMutation,useLogoutMutation , useSuggestedUsersQuery,useLazyGetProfileQuery,useEditProfileMutation} = userApi;
