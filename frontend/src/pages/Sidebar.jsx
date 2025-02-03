@@ -26,6 +26,8 @@ const [logout,{isSuccess:isLogoutSucesss}]=useLogoutMutation()
             navigate(`/dashboard/profile/${user._id}`)
           }else if(textType==='Home'){
             navigate(`/dashboard`)
+          }else if(textType==='Messages'){
+            navigate(`/dashboard/chat`)
           }
     }
 

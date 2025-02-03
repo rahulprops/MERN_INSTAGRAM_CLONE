@@ -6,11 +6,7 @@ const RightSidebar = () => {
   // Dummy data for suggested users
   const {user}=useSelector((store=>store.auth))
   const {data,isLoading,isError,isSuccess,error}=useSuggestedUsersQuery()
-  const suggestedUsers = [
-    { id: 1, name: "John Doe", username: "johndoe", profilePic: "https://via.placeholder.com/50" },
-    { id: 2, name: "Jane Smith", username: "janesmith", profilePic: "https://via.placeholder.com/50" },
-    { id: 3, name: "Michael Brown", username: "michaelbrown", profilePic: "https://via.placeholder.com/50" },
-  ];
+  
   if(isLoading) return <div>loading</div>
 
   return (

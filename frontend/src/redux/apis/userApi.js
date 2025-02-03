@@ -17,7 +17,8 @@ const userApi = apiSlice.injectEndpoints({
                 } catch (error) {
                     console.error("Login API Error:", error);
                 }
-            }
+            },
+        
         }),
         logout:builder.mutation({
             query:()=>({
@@ -49,6 +50,7 @@ const userApi = apiSlice.injectEndpoints({
                 method:"put",
                 body:formData
             }),
+            
             
         })
     })

@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import CreatePost from "./pages/CreatePost";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
+import ChatPage from "./pages/ChatPage";
 
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
           <Route path="/dashboard/create-post" element={<CreatePost/>} />
           <Route path="/dashboard/profile/:id" element={<Profile/>} />
           <Route path="/dashboard/edit-profile" element={<EditProfile/>} />
+          <Route path="/dashboard/chat" element={<ChatPage/>} />
         </Route>
       </Routes>
     </Router>
