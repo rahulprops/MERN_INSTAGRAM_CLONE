@@ -17,8 +17,18 @@ const postApi=apiSlice.injectEndpoints({
               }),
               transformResponse:(data)=>{
                 return data.data
-              }
+              },
+              providesTags: ["refresh_list"],
+        }),
+        
+        addComments:builder.mutation({
+          query:({postId, text})=>({
+            url:`/post/add-comment/${postId}`,
+            method:"POST",
+            body:{text}
+          }),
+          invalidatesTags:["refresh_list"],
         })
     })
 })
-export const {useCreatePostMutation,useListPostQuery}=postApi;
+export const {useCreatePostMutation,useListPostQuery,useAddCommentsMutation}=postApi;

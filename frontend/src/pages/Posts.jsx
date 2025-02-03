@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiHeart, FiMessageCircle, FiSend, FiMoreHorizontal, FiBookmark } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import image from '../assets/kurta.jpg';
 import CommentDialog from "../componets/CommentDialog";
+import { useAddCommentsMutation } from "../redux/apis/postApi";
 
 const Posts = ({post}) => {
   const [liked, setLiked] = useState(false);
@@ -10,8 +11,10 @@ const Posts = ({post}) => {
   const [saved, setSaved] = useState(false);
   const [text, setText] = useState(""); // State for comment text
   const [open, setOpen] = useState(false); // State to manage comment dialog visibility
-  const [comments, setComments] = useState(["Beautiful!", "Amazing view!", "Love it!"]); // Example comments
- console.log(post)
+   // Example comments
+//  console.log(post)
+
+const [addComments ,{isSuccess,isError,error,isLoading}]=useAddCommentsMutation()
   const toggleLike = () => {
     setLiked(!liked);
     setLikes(liked ? likes - 1 : likes + 1);
@@ -25,16 +28,30 @@ const Posts = ({post}) => {
     setText(e.target.value);
   };
 
-  const handleCommentSubmit = () => {
+  const handleCommentSubmit = async () => {
     const trimmedText = text.trim(); // Trim the whitespace from the input
 
     if (trimmedText) {
-      setComments([...comments, trimmedText]); // Add new comment to the list
-      setText(""); // Clear input after submitting
+        try {
+           await addComments({postId:post?._id, text:trimmedText})
+          // alert(post?._id)
+        } catch (error) {
+          console.log(error)
+        }
+    
     } else {
       console.log("Comment cannot be empty");
     }
   };
+  useEffect(()=>{
+   if(isSuccess){
+    alert("comment add sucessful")
+    setText("")
+   }
+   if(isError){
+    alert(error?.message)
+   }
+  },[isError,isLoading,error,isSuccess])
 
   return (
     <div className="max-w-lg bg-white rounded-lg shadow-md p-4 mb-6">
@@ -81,11 +98,11 @@ const Posts = ({post}) => {
 
       {/* Comments */}
       <p className="text-sm text-gray-500 mt-2 cursor-pointer" onClick={() => setOpen(true)}>
-        View all {comments.length} comments
+        View all {post.comments.length} comments
       </p>
       
       {/* Comment Dialog */}
-      <CommentDialog open={open} setOpen={setOpen} comments={comments} setComments={setComments} />
+      <CommentDialog open={open} setOpen={setOpen}  post={post} />
 
       {/* Add Comment Input */}
       <div className="mt-3 flex items-center">
