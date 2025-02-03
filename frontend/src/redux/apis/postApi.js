@@ -28,7 +28,13 @@ const postApi=apiSlice.injectEndpoints({
             body:{text}
           }),
           invalidatesTags:["refresh_list"],
+        }),
+        likeOrDislike:builder.mutation({
+          query:({action,postId})=>({
+            url:`/post/${action}/${postId}`,
+            method:"POST"
+          })
         })
     })
 })
-export const {useCreatePostMutation,useListPostQuery,useAddCommentsMutation}=postApi;
+export const {useCreatePostMutation,useListPostQuery,useAddCommentsMutation,useLikeOrDislikeMutation}=postApi;
