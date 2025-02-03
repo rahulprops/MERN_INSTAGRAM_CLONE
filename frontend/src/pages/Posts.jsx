@@ -104,7 +104,7 @@ const Posts = ({ post }) => {
       </p>
 
       {/* Comment Dialog */}
-      <CommentDialog open={open} setOpen={setOpen} comments={post.comments} onSubmitComment={handleCommentSubmit} />
+      <CommentDialog open={open} setOpen={setOpen} post={post} onSubmitComment={handleCommentSubmit} />
 
       {/* Add Comment Input */}
       <div className="mt-3 flex items-center">

@@ -24,8 +24,17 @@ const userApi = apiSlice.injectEndpoints({
                 url:"/user/logout",
                 method:"POST"
             })
+        }),
+        suggestedUsers:builder.query({
+            query:()=>({
+                url:"/user/suggested-users",
+                method:"GET"
+            }),
+            transformResponse:(data)=>{
+                return data.data
+              },
         })
     })
 });
 
-export const { useLoginMutation,useLogoutMutation } = userApi;
+export const { useLoginMutation,useLogoutMutation , useSuggestedUsersQuery} = userApi;
