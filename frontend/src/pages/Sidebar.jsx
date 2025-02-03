@@ -22,6 +22,10 @@ const [logout,{isSuccess:isLogoutSucesss}]=useLogoutMutation()
 
           }else if(textType==='Create'){
             navigate("/dashboard/create-post")
+          }else if(textType==='Profile'){
+            navigate(`/dashboard/profile/${user._id}`)
+          }else if(textType==='Home'){
+            navigate(`/dashboard`)
           }
     }
 

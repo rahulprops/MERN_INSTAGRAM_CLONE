@@ -4,6 +4,7 @@ import { FaHeart } from "react-icons/fa";
 import CommentDialog from "../componets/CommentDialog";
 import { useAddCommentsMutation, useLikeOrDislikeMutation } from "../redux/apis/postApi";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Posts = ({ post }) => {
   const { user } = useSelector((store) => store.auth);
@@ -12,7 +13,7 @@ const Posts = ({ post }) => {
   const [saved, setSaved] = useState(false);
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
-
+ const navigate=useNavigate()
   const [likeOrDislike] = useLikeOrDislikeMutation();
   const [addComments, { isSuccess, isError, error, isLoading }] = useAddCommentsMutation();
 //  console.log(liked)
@@ -59,7 +60,7 @@ const Posts = ({ post }) => {
     <div className="max-w-lg bg-white rounded-lg shadow-md p-4 mb-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-3 cursor-pointer" onClick={()=>navigate(`/dashboard/profile/${post.author._id}`)}>
           <img src={post?.author?.profilePicture} alt="User" className="w-10 h-10 rounded-full" />
           <span className="font-semibold capitalize">{post.author.username}</span>
         </div>

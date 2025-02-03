@@ -103,7 +103,7 @@ export const getProfile=async (req,res)=>{
         return errorHandler(res,400,"please enter valid id")
     }
     try {
-        const user=await userModel.findById(userId).select("-password")
+        const user=await userModel.findById(userId).select("-password").populate({path:'posts',createAt:-1}).populate("bookmarks")
         return errorHandler(res,200,"get profile sucess",user)
     } catch (err) {
       return errorHandler(res,500,`server error ${err.message}`)        

@@ -3,7 +3,7 @@ import image from "../assets/kurta.jpg";
 
 const CommentDialog = ({ open, setOpen, post, onSubmitComment }) => {
   const [text, setText] = useState("");
- console.log(post)
+//  console.log(post)
   if (!open) return null; // Do not render the dialog if not open
 
   const handleClose = () => {

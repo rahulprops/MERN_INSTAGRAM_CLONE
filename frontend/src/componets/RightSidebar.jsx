@@ -11,6 +11,7 @@ const RightSidebar = () => {
     { id: 2, name: "Jane Smith", username: "janesmith", profilePic: "https://via.placeholder.com/50" },
     { id: 3, name: "Michael Brown", username: "michaelbrown", profilePic: "https://via.placeholder.com/50" },
   ];
+  if(isLoading) return <div>loading</div>
 
   return (
     <div className="w-80 p-4 ">

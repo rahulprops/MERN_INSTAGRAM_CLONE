@@ -33,8 +33,17 @@ const userApi = apiSlice.injectEndpoints({
             transformResponse:(data)=>{
                 return data.data
               },
+        }),
+        getProfile:builder.query({
+            query:(id)=>({
+                url:`/user/get-profile/${id}`,
+                method:"GET"
+            }),
+            transformResponse:(data)=>{
+                return data.data
+              },
         })
     })
 });
 
-export const { useLoginMutation,useLogoutMutation , useSuggestedUsersQuery} = userApi;
+export const { useLoginMutation,useLogoutMutation , useSuggestedUsersQuery,useLazyGetProfileQuery} = userApi;

@@ -6,6 +6,7 @@ import Login from "./componets/ui/Login";
 import Signup from "./componets/ui/Signup";
 import Home from "./pages/Home";
 import CreatePost from "./pages/CreatePost";
+import Profile from "./pages/Profile";
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         >
           <Route index element={<Home/>} />
           <Route path="/dashboard/create-post" element={<CreatePost/>} />
+          <Route path="/dashboard/profile/:id" element={<Profile/>} />
         </Route>
       </Routes>
     </Router>
