@@ -4,6 +4,7 @@ import cloudinary from '../utils/cloudinary.js';
 import postModel from '../models/post.model.js';
 import userModel from '../models/user.model.js';
 import commentModel from '../models/comment.model.js';
+import { getReceiverSocketId, io } from '../socket/socket.js';
  //! create post
 export const addNewPost=async (req,res)=>{
     const {caption}=req.body;
@@ -99,6 +100,21 @@ export const addNewPost=async (req,res)=>{
         await post.updateOne({$addToSet:{likes:userId}})
         await post.save()
         // implement socket io for real time notfication
+      const user= await findById(userId).select('username profilePicture')
+
+       const postOwnerId= post.author.toString()
+       if(postOwnerId !== userId){
+        const notification={
+            type:'like',
+            userId:userId,
+            userDetails:user,
+            postId,
+            message:"your post was liked"
+        }
+        const postOwnerSocketId=getReceiverSocketId(postOwnerId)
+        io.to(postOwnerSocketId).emit('notification',notification)
+       }
+
         return errorHandler(res,200,"post liked")
     } catch (error) {
         return errorHandler(res,500,`server error ${err.message}`)
@@ -116,6 +132,24 @@ export const addNewPost=async (req,res)=>{
          await post.updateOne({$pull:{likes:userId}})
          await post.save()
              // implement socket io for real time notfication
+
+             const user= await findById(userId).select('username profilePicture')
+
+             const postOwnerId= post.author.toString()
+             if(postOwnerId !== userId){
+              const notification={
+                  type:'dislike',
+                  userId:userId,
+                  userDetails:user,
+                  postId,
+                  message:"your post was liked"
+              }
+              const postOwnerSocketId=getReceiverSocketId(postOwnerId)
+              io.to(postOwnerSocketId).emit('notification',notification)
+             }
+
+
+
              
              return errorHandler(res,200,"post disliked")
 

@@ -1,6 +1,7 @@
 import errorHandler from '../middleware/error_logs/errorHandler.js'
 import conversationModel from '../models/conversation.model.js'
 import messageModel from '../models/message.model.js';
+import { getReceiverSocketId, io } from '../socket/socket.js';
 //! create message
 export const sendMessage=async (req,res)=>{
     const senderId=req.id;
@@ -28,6 +29,12 @@ export const sendMessage=async (req,res)=>{
         await Promise.all([conversation.save(),newMessage.save()])
 
         // implement socet io
+          const receiverSocketId=getReceiverSocketId(receiverId)
+
+          if(receiverSocketId){
+            io.to(receiverSocketId).emit('newMessage',newMessage)
+          }
+
         return errorHandler(res,201,"new message",newMessage)
         }else{
             return errorHandler(res,400,"create message failed")
