@@ -116,7 +116,7 @@ export const addNewPost=async (req,res)=>{
        }
 
         return errorHandler(res,200,"post liked")
-    } catch (error) {
+    } catch (err) {
         return errorHandler(res,500,`server error ${err.message}`)
     }
  }

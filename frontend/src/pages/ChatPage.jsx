@@ -4,8 +4,10 @@ import { useSuggestedUsersQuery } from "../redux/apis/userApi";
 import { setSelectedUser } from "../redux/slice/authSlice";
 import { useLazyGetMessagesQuery, useSendMessageMutation } from "../redux/apis/messageApi";
 import { setMessages } from "../redux/slice/chatSlice";
+import useGetRTM from "../hooks/useGetRTM";
 
 const ChatPage = () => {
+  useGetRTM()
   const dispatch = useDispatch();
   const { user, selectedUser } = useSelector((store) => store.auth);
   const { onlineUsers, messages } = useSelector((store) => store.chat);
