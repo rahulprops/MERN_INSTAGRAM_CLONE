@@ -27,8 +27,11 @@ export const register= async (req,res)=>{
     try {
         // check user exist or not
         const user = await userModel.findOne({email})
-        if(user){
+        if(user && user.verify){
             return res.status(400).json({message:"already user exists"})
+        }
+        if(user && !user.verify){
+            await userModel.deleteOne(user)
         }
         // password hashing 
          const hashPass=await bcrypt.hash(password , 12)
@@ -68,8 +71,8 @@ export const verifyUser = async (req, res) => {
         return errorHandler(res, 400, "Invalid credentials");
     }
 
-    console.log("Email:", email);
-    console.log("Token:", token);
+    // console.log("Email:", email);
+    // console.log("Token:", token);
 
     try {
         const user = await userModel.findOne({ email });
@@ -77,14 +80,14 @@ export const verifyUser = async (req, res) => {
             return errorHandler(res, 400, "User not found");
         }
 
-        console.log("Stored Verification Data:", verification[email]);
+        // console.log("Stored Verification Data:", verification[email]);
 
-        // ✅ Fix: Ensure verification[email] exists before checking expiration
+    
         if (!verification[email] || verification[email].expires < Date.now()) {
             return errorHandler(res, 400, "Link has expired");
         }
 
-        // ✅ Fix: Ensure token matches
+        
         if (verification[email].token !== token) {
             return errorHandler(res, 400, "Invalid token");
         }
@@ -113,6 +116,9 @@ export const login=async (req,res)=>{
         const user=await userModel.findOne({email})
         if(!user){
             return errorHandler(res,400,"email not valid")
+        }
+        if(!user.verify){
+           return errorHandler(res,400,"user not verified")
         }
 
         // compare password

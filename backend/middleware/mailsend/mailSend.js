@@ -37,7 +37,7 @@ const sendMail=async (req,res,next)=>{
                <a href="http://localhost:9076/api/user/verify/${email}/${token}">Verify Account</a>`
     }
     try {
-        console.log(10)
+        // console.log(10)
            transport.sendMail(userInfo, (err,info)=>{
             if(err){
                 return res.status(400).json({message:`mail sending error ${err.message}`})
