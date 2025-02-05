@@ -6,6 +6,7 @@ import errorHandler from '../middleware/error_logs/errorHandler.js';
 import mongoose from 'mongoose';
 import getDataUri from '../utils/datauri.js';
 import cloudinary from '../utils/cloudinary.js';
+import { verification } from '../middleware/mailsend/mailSend.js';
 //! register user 
 export const register= async (req,res)=>{
     const {username,email,password,gender}=req.body;
@@ -58,6 +59,46 @@ export const register= async (req,res)=>{
      })
     }
 }
+
+//! veriy user
+export const verifyUser = async (req, res) => {
+    const { email, token } = req.params;
+
+    if (!email || !token) {
+        return errorHandler(res, 400, "Invalid credentials");
+    }
+
+    console.log("Email:", email);
+    console.log("Token:", token);
+
+    try {
+        const user = await userModel.findOne({ email });
+        if (!user) {
+            return errorHandler(res, 400, "User not found");
+        }
+
+        console.log("Stored Verification Data:", verification[email]);
+
+        // ✅ Fix: Ensure verification[email] exists before checking expiration
+        if (!verification[email] || verification[email].expires < Date.now()) {
+            return errorHandler(res, 400, "Link has expired");
+        }
+
+        // ✅ Fix: Ensure token matches
+        if (verification[email].token !== token) {
+            return errorHandler(res, 400, "Invalid token");
+        }
+
+        // ✅ Verify user and remove verification data
+        user.verify = true;
+        await user.save();
+        delete verification[email]; // Remove from stored tokens
+
+        return errorHandler(res, 200, "User verified successfully");
+    } catch (err) {
+        return errorHandler(res, 500, `Server error: ${err.message}`);
+    }
+};
 
 //! login user
 export const login=async (req,res)=>{

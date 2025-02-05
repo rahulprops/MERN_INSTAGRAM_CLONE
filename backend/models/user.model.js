@@ -43,6 +43,10 @@ const userSchema=new Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"post"
     }],
+    verify:{
+        type:Boolean,
+        default:false
+    }
 },{timestamps:true})
 const userModel=mongoose.model("user",userSchema)
 export default userModel;
